@@ -32,20 +32,22 @@ public class LimbEnergyController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        calculateSubtractableEnergy();
-        energyRegeneration();
+        speed = controller.GetTrackedObjectVelocity().magnitude;
+        CalculateSubtractableEnergy();
+        EnergyRegeneration();
     }
 
-    private void energyRegeneration()
+    private void EnergyRegeneration()
     {
-        EnergyController.instance.AddEnergy(energyIncrementPerTick);
+        if (speed > minEnergyThreshold)
+        {
+            EnergyController.instance.AddEnergy(energyIncrementPerTick);
+        }
     }
     
-    private void calculateSubtractableEnergy()
+    private void CalculateSubtractableEnergy()
     {
-        speed = controller.GetTrackedObjectVelocity().magnitude;
         if (speed < minEnergyThreshold) return;
-        //
         if(speed < maxEnergyThreshold)
         {
             speed = maxEnergyThreshold;
