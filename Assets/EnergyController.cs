@@ -7,6 +7,8 @@ public class EnergyController : MonoBehaviour
     public float energy=100;
 
     public static EnergyController instance;
+
+    public float leftHandVelo, rightHandVelo;
     // Start is called before the first frame update
     void Start()
     {
@@ -19,6 +21,25 @@ public class EnergyController : MonoBehaviour
     void Update()
     {
         
+    }
+
+    public void AddSetEnergy(float val)
+    {
+        energy += val;
+        if (energy > 100)
+            energy = 100;
+    }
+
+    public void SetVelocity(Limb lim,float velo)
+    {
+        if (lim.ToString() == "LeftHand")
+        {
+            leftHandVelo = velo;
+        }
+        if (lim.ToString() == "RightHand")
+        {
+            rightHandVelo = velo;
+        }
     }
 
     public void AddEnergy(float velo)

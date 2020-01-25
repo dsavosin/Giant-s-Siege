@@ -3,12 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
-
+public enum Limb { LeftHand, RightHand, LeftLeg, RightLeg, Head }
 public class LimbEnergyController : MonoBehaviour
 {
     [SerializeField]
     Valve.VR.InteractionSystem.Hand controller;
-    enum Limb {LeftHand,RightHand,LeftLeg,RightLeg,Head}
+   
     [SerializeField]
     Limb limb;
     [SerializeField]
@@ -34,10 +34,17 @@ public class LimbEnergyController : MonoBehaviour
     {
         if (controller.isPoseValid)
         {
+            
             speed = controller.GetTrackedObjectVelocity().magnitude;
+            EnergyController.instance.SetVelocity(limb, speed);
             CalculateSubtractableEnergy();
             EnergyRegeneration();
         }
+        else
+        {
+            EnergyController.instance.SetVelocity(limb, 0);
+        }
+
     }
 
     private void EnergyRegeneration()

@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class MouthController : MonoBehaviour
 {
+    [SerializeField]
+    float energyPerSoldier = 10;
     // Start is called before the first frame update
     void Start()
     {
@@ -21,7 +23,9 @@ public class MouthController : MonoBehaviour
        
         if (other.tag == "Food")
         {
-            Destroy(other.transform.parent.gameObject);
+            EnergyController.instance.AddSetEnergy(energyPerSoldier);
+            Destroy(other.transform.gameObject);
+
         }
     }
 }
