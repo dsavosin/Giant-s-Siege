@@ -5,11 +5,12 @@ using UnityEngine;
 public class LimbEnergyController : MonoBehaviour
 {
     [SerializeField]
-    SteamVR_Behaviour_Pose controller;
+    Valve.VR.SteamVR_Behaviour_Pose controller;
     enum Limb {LeftHand,RightHand,LeftLeg,RightLeg}
     [SerializeField]
     Limb limb;
-
+    [SerializeField]
+    float speed;
     [SerializeField]
     float energy;
 
@@ -22,6 +23,6 @@ public class LimbEnergyController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        speed = controller.GetVelocity().magnitude;
     }
 }
