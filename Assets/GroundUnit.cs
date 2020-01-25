@@ -37,7 +37,7 @@ public class GroundUnit : MonoBehaviour
     void Start()
     {
         //Fill in array of soldiers
-        soldiers = GetComponentsInChildren<Transform>();
+        //soldiers = GetComponentsInChildren<SoldierUnit>()as transform;
 
         //foreach(Transform soldier in soldiers)
         //{

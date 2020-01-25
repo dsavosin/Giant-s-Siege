@@ -1,11 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEditor.Animations;
 public class SoldierUnit : MonoBehaviour
 {
     [SerializeField]
     float soldierSpeed;
+
+    [SerializeField]
+    Animator anim;
 
     public Vector3 localInitPosition;
     public Quaternion localInitRotation;
@@ -28,6 +31,11 @@ public class SoldierUnit : MonoBehaviour
             transform.localPosition = Vector3.Lerp(transform.localPosition, localInitPosition, Time.deltaTime);
             transform.localRotation = localInitRotation;
         }
+
+        if (eaten)
+        {
+            anim.SetBool("isAlive", false);
+        }
     }
 
     public void DisableSoldier()
@@ -38,5 +46,6 @@ public class SoldierUnit : MonoBehaviour
         rb.isKinematic = false;
         tag = "Food";
         eaten = true;
+      
     }
 }

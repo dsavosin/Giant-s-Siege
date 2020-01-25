@@ -35,7 +35,7 @@ public class DestructableObject : MonoBehaviour
     void OnCollisionEnter(Collision collision)
     {
         bool dealDamage = false;
-
+        Debug.Log(collision.transform.tag);
 
         if (collision.gameObject.CompareTag("LeftHand"))
         {
@@ -56,13 +56,19 @@ public class DestructableObject : MonoBehaviour
 
         if (collision.gameObject.CompareTag("Interactable"))
         {
-            Rigidbody rb = collision.transform.parent.GetComponent<Rigidbody>();
+            Rigidbody rb = collision.gameObject.GetComponentInParent<Rigidbody>();
+           
             if (rb != null)
             {
-                if(rb.velocity.magnitude > 3.0f)
+                Debug.Log(rb.velocity.magnitude);
+                if(rb.velocity.magnitude > 0.7f)
                 {
                     dealDamage = true;
                 }
+            }
+            else
+            {
+                Debug.Log("NoRB");
             }
         }
 
