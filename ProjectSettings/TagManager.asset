@@ -12,6 +12,7 @@ TagManager:
   - RegroupPoint
   - LeftHand
   - RightHand
+  - Interactable
   layers:
   - Default
   - TransparentFX

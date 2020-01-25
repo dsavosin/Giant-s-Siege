@@ -21,7 +21,8 @@ public class GroundUnit : MonoBehaviour
 
     [SerializeField]
     float unitSpeed;
-
+    [SerializeField]
+    float unitDamage;
     public Transform[] soldiers;
     [SerializeField]
     UnityEvent OnScare;
@@ -30,7 +31,7 @@ public class GroundUnit : MonoBehaviour
     Transform playerTarget;
     Transform gazeTarget;
     Transform regroupPoint;
-
+    
     bool killed=false;
     // Start is called before the first frame update
     void Start()
@@ -88,6 +89,10 @@ public class GroundUnit : MonoBehaviour
             {
                 float step = unitSpeed * Time.deltaTime;
                 transform.position = Vector3.MoveTowards(transform.position, playerFloorPos, step);
+            }
+            else
+            {
+                EnergyController.instance.SubtractEnergy(unitDamage * Time.deltaTime);
             }
         }
     }
@@ -163,6 +168,17 @@ public class GroundUnit : MonoBehaviour
                 StartCoroutine(DestroyUnit(4.0f));
             }
         }
+        if (other.tag == "Interactable")
+        {
+            Rigidbody rb = other.GetComponentInParent<Rigidbody>();
+            if (rb.velocity.magnitude > 3)
+            {
+                Destroy(other.gameObject);
+                SmackEm();
+                StartCoroutine(DestroyUnit(4.0f));
+            }
+
+        }
     }
 
     public IEnumerator ReturnToUnit(float delay = 0.0f)
@@ -171,6 +187,7 @@ public class GroundUnit : MonoBehaviour
             yield return new WaitForSeconds(delay);
 
 
+       
         //if(regroupPoint != null)
         //transform.position = regroupPoint.position;
 
