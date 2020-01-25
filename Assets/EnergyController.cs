@@ -21,6 +21,11 @@ public class EnergyController : MonoBehaviour
         
     }
 
+    public void AddEnergy(float velo)
+    {
+        energy += velo;
+    }
+    
     public void SubtractEnergy(float velo)
     {
         energy -= velo;
