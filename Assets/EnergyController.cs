@@ -8,11 +8,17 @@ public class EnergyController : MonoBehaviour
 
     public static EnergyController instance;
 
+    public static SocketManager wss;
+    
+    public string wssUri = "wss://ldss.xyz";
+
     public float leftHandVelo, rightHandVelo;
     // Start is called before the first frame update
     void Start()
     {
         instance = this;
+
+        wss = SocketManager.getInstance(wssUri);
     }
 
 
