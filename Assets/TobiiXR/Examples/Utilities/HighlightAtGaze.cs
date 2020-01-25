@@ -30,6 +30,7 @@ namespace Tobii.XR.Examples
             }
         }
 
+        
         private void Start()
         {
             _renderer = GetComponent<Renderer>();
@@ -39,6 +40,8 @@ namespace Tobii.XR.Examples
 
         private void Update()
         {
+            
+            
             //This lerp will fade the color of the object
             if (_renderer.material.HasProperty(Shader.PropertyToID("_BaseColor"))) // new rendering pipeline (lightweight, hd, universal...)
             {

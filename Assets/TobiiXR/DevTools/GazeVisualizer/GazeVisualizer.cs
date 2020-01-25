@@ -8,6 +8,9 @@ namespace Tobii.XR
     [RequireComponent(typeof(SpriteRenderer))]
     public class GazeVisualizer : MonoBehaviour
     {
+        [SerializeField]
+        GameObject target;
+
         private enum GazeVisualizerType
         {
             Default,

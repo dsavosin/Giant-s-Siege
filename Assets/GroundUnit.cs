@@ -106,7 +106,8 @@ public class GroundUnit : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        if(other.GetComponent<LimbEnergyController>())
+        
+        if(other.gameObject.CompareTag("Hand"))
         {
             Debug.Log("Ground Unit collided with a hand!");
             SmackEm();
