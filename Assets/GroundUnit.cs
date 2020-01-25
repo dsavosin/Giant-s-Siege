@@ -26,6 +26,7 @@ public class GroundUnit : MonoBehaviour
 
     Transform playerTarget;
     Transform gazeTarget;
+    Transform regroupPoint;
 
     // Start is called before the first frame update
     void Start()
@@ -33,11 +34,22 @@ public class GroundUnit : MonoBehaviour
         //Fill in array of soldiers
         soldiers = GetComponentsInChildren<Transform>();
 
+        //foreach(Transform soldier in soldiers)
+        //{
+        //    transform.parent = null;
+        //}
+
         playerTarget = Camera.main.transform;
 
-        if(GameObject.FindObjectOfType<GazePoint>() != null)
+        if (GameObject.FindObjectOfType<GazePoint>() != null)
         {
             gazeTarget = GameObject.FindObjectOfType<GazePoint>().transform;
+        }
+
+        regroupPoint = GameObject.FindGameObjectWithTag("RegroupPoint").transform;
+        if(regroupPoint == null)
+        {
+            Debug.LogAssertion("No retreat point on the level!!!!");
         }
 
         // Default unit rotation to start looking at the player despite its spawned rotation
@@ -53,6 +65,12 @@ public class GroundUnit : MonoBehaviour
         {
             SmackEm();
             StartCoroutine(DestroyUnit(4.0f));
+        }
+
+        if (Input.GetKeyDown(KeyCode.S))
+        {
+            ScareEm();
+            StartCoroutine(ReturnToUnit(1.0f));
         }
 
         Vector3 playerFloorPos = new Vector3(playerTarget.position.x, 0.0f, playerTarget.position.z);
@@ -72,15 +90,20 @@ public class GroundUnit : MonoBehaviour
     {
         foreach(Transform soldier in soldiers)
         {
-            Rigidbody rb = soldier.GetComponent<Rigidbody>();
-
-            if(rb != null)
+            if (soldier != this.transform)
             {
-                rb.isKinematic = false;
-                rb.useGravity = true;
-                rb.AddExplosionForce(explosionForce, transform.position, explosionRadius, explosionLift);
 
-                //Disable animation controllers per entity
+                Rigidbody rb = soldier.GetComponent<Rigidbody>();
+
+                if (rb != null)
+                {
+                    rb.constraints = RigidbodyConstraints.None;
+                    rb.isKinematic = false;
+                    rb.useGravity = true;
+                    rb.AddExplosionForce(explosionForce, transform.position, explosionRadius, explosionLift);
+
+                    //Disable animation controllers per entity
+                }
             }
         }
     }
@@ -89,17 +112,23 @@ public class GroundUnit : MonoBehaviour
     {
         foreach (Transform soldier in soldiers)
         {
-            Rigidbody rb = soldier.GetComponent<Rigidbody>();
-
-            if (rb != null)
+            if (soldier != this.transform)
             {
-                rb.isKinematic = false;
-                rb.useGravity = false;
+                Rigidbody rb = soldier.GetComponent<Rigidbody>();
 
-                Vector3 randDir = new Vector3(Random.Range(-1.0f, 1.0f), 0.0f, Random.Range(-1.0f, 1.0f));
-                rb.velocity = randDir;
+                if (rb != null)
+                {
+                    rb.isKinematic = false;
+                    rb.useGravity = false;
 
-                //Disable animation controllers per entity
+                    rb.constraints = RigidbodyConstraints.FreezeRotation;
+
+                    rb.AddExplosionForce(50f, transform.position, 10f, 0.0f);
+                    //Vector3 randDir = new Vector3(Random.Range(-1.0f, 1.0f), 0.0f, Random.Range(-1.0f, 1.0f));
+                    //rb.velocity = randDir;
+
+                    //Disable animation controllers per entity
+                }
             }
         }
     }
@@ -127,20 +156,29 @@ public class GroundUnit : MonoBehaviour
         if (delay != 0)
             yield return new WaitForSeconds(delay);
 
+
+        //if(regroupPoint != null)
+        //transform.position = regroupPoint.position;
+
         // The rest of your coroutine here
         foreach (Transform soldier in soldiers)
         {
-            Rigidbody rb = soldier.GetComponent<Rigidbody>();
-
-            if (rb != null)
+            if (soldier != this.transform)
             {
-                rb.velocity = Vector3.zero;
-            }
+                Rigidbody rb = soldier.GetComponent<Rigidbody>();
 
-            SoldierUnit singleUnit = soldier.GetComponent<SoldierUnit>();
-            if(singleUnit != null)
-            {
-                singleUnit.returnToPosition = true;
+                if (rb != null)
+                {
+                    rb.constraints = RigidbodyConstraints.None;
+                   // rb.velocity = Vector3.zero;
+                    rb.isKinematic = true;
+                }
+
+                SoldierUnit singleUnit = soldier.GetComponent<SoldierUnit>();
+                if (singleUnit != null)
+                {
+                    singleUnit.returnToPosition = true;
+                }
             }
         }
     }

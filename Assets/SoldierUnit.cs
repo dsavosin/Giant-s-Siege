@@ -10,21 +10,22 @@ public class SoldierUnit : MonoBehaviour
     public Vector3 localInitPosition;
     public Quaternion localInitRotation;
     public bool returnToPosition;
-    
+
+    //Store delta to parent and de-parent them
+
     void Start()
     {
         returnToPosition = false;
         localInitPosition = transform.localPosition;
-        localInitRotation = transform.rotation;
+        localInitRotation = transform.localRotation;
     }
 
     void Update()
     {
-        if(returnToPosition)
+        if (returnToPosition)
         {
-            returnToPosition = false;
-            transform.localPosition = localInitPosition;
-            transform.rotation = localInitRotation;
+            transform.localPosition = Vector3.Lerp(transform.localPosition, localInitPosition, Time.deltaTime);
+            transform.localRotation = localInitRotation;
         }
     }
 }

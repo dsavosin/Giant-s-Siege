@@ -9,6 +9,7 @@ TagManager:
   - GazePoint
   - Food
   - Hand
+  - RegroupPoint
   layers:
   - Default
   - TransparentFX
