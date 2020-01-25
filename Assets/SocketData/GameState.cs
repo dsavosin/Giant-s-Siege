@@ -4,6 +4,6 @@ namespace SocketData
     {
         public float TotalEnergy;
         public bool HasGameComplete = false;
-        public VillagerSpawner[] VillagerSpawners;
+        // public VillagerSpawner[] VillagerSpawners;
     }
 }
