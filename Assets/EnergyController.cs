@@ -31,7 +31,9 @@ public class EnergyController : MonoBehaviour
     
     public void SubtractEnergy(float velo)
     {
-        if (energy >= 0)
+        if (energy >= 0 && energy < 1000)
+        {
             energy -= velo;
+        }
     }
 }
