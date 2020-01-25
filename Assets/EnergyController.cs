@@ -23,7 +23,10 @@ public class EnergyController : MonoBehaviour
 
     public void AddEnergy(float velo)
     {
-        energy += velo;
+        if (energy < 100)
+        {
+            energy += velo * Time.deltaTime;
+        }
     }
     
     public void SubtractEnergy(float velo)

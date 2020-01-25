@@ -43,22 +43,20 @@ public class LimbEnergyController : MonoBehaviour
     
     private void calculateSubtractableEnergy()
     {
+        if (speed < minEnergyThreshold) return;
         speed = controller.GetTrackedObjectVelocity().magnitude;
-        if (speed > minEnergyThreshold)
+        if(speed < maxEnergyThreshold)
         {
-            if(speed < maxEnergyThreshold)
-            {
-                speed = maxEnergyThreshold;
-            }
-
-            EnergyController.instance.SubtractEnergy(this.CalculateEnergySubtraction());
+            speed = maxEnergyThreshold;
         }
+
+        EnergyController.instance.SubtractEnergy(this.CalculateEnergySubtraction());
     }
     
     private float CalculateEnergySubtraction()
     {
       var energyPenaltyPercentage = EnergyController.instance.energy;
-      return speed * BaseEnergyDeincrementalRatio * energyPenaltyPercentage;
+      return speed * BaseEnergyDeincrementalRatio * energyPenaltyPercentage * Time.deltaTime;
     }
 
     void OnTriggerEnter (Collider other)
