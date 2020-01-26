@@ -10,6 +10,10 @@ public class EnergyController : MonoBehaviour
 
     public static SocketManager wss;
     
+    // WebSocket events are sent every 9 frames, force the first read
+    // to be -1 so that events are sent immediately when started.
+    private static int socketFrameCount = -1;
+    
     public string wssUri = "wss://ldss.xyz";
 
     public float leftHandVelo, rightHandVelo;
@@ -29,14 +33,12 @@ public class EnergyController : MonoBehaviour
     void Start()
     {
         instance = this;
-<<<<<<< HEAD
+
         flipSwitch = false;
         hitCastleFirstTime = false;
         canSpawn = false;
-=======
 
         wss = SocketManager.getInstance(wssUri);
->>>>>>> 1859acb05f3da7eb9f5d3c67fd5cc0203c936ae9
     }
 
 
@@ -52,6 +54,12 @@ public class EnergyController : MonoBehaviour
         {
             canSpawn = false;
             SpawnUnit();
+        }
+        
+        if (++socketFrameCount % 9 == 0)
+        {
+            socketFrameCount = 0;
+            wss.Flush();
         }
     }
 
@@ -74,6 +82,8 @@ public class EnergyController : MonoBehaviour
         energy += val;
         if (energy > 100)
             energy = 100;
+        
+        wss.AddEvent(new SocketEvent("MonsterEnergyChange", energy));
     }
 
     public void SetVelocity(Limb lim,float velo)
@@ -93,6 +103,8 @@ public class EnergyController : MonoBehaviour
         if (energy < 100)
         {
             energy += velo * Time.deltaTime;
+            
+            wss.AddEvent(new SocketEvent("MonsterEnergyChange", energy));
         }
     }
     
@@ -101,6 +113,8 @@ public class EnergyController : MonoBehaviour
         if (energy >= 0 && energy < 1000)
         {
             energy -= velo;
+            
+            wss.AddEvent(new SocketEvent("MonsterEnergyChange", energy));
         }
 
         if(energy <= 50 && canSpawn == false)
