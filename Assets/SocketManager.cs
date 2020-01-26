@@ -67,7 +67,7 @@ public class SocketManager
             return;
         }
 
-        events[e.Type] = e;
+        events[e.type] = e;
     }
 
     public void Flush()

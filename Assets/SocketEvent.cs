@@ -1,19 +1,20 @@
 ﻿public class SocketEvent
 {
-    public readonly string Type;
-    public readonly string SubType = null;
-    public readonly dynamic Value;
+    public readonly string clientType = "Server";
+    public readonly string type;
+    public readonly string subType = null;
+    public readonly dynamic value;
 
     public SocketEvent(string type, dynamic value)
     {
-        Type = type;
-        Value = value;
+        this.type = type;
+        this.value = value;
     }
     
     public SocketEvent(string type, string subType, dynamic value)
     {
-        Type = type;
-        SubType = subType;
-        Value = value;
+        this.type = type;
+        this.subType = subType;
+        this.value = value;
     }
 }
