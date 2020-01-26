@@ -8,6 +8,10 @@ public class EnergyController : MonoBehaviour
 
     public static EnergyController instance;
 
+    public static SocketManager wss;
+    
+    public string wssUri = "wss://ldss.xyz";
+
     public float leftHandVelo, rightHandVelo;
 
     public GameObject groundUnitPrefab;
@@ -25,9 +29,14 @@ public class EnergyController : MonoBehaviour
     void Start()
     {
         instance = this;
+<<<<<<< HEAD
         flipSwitch = false;
         hitCastleFirstTime = false;
         canSpawn = false;
+=======
+
+        wss = SocketManager.getInstance(wssUri);
+>>>>>>> 1859acb05f3da7eb9f5d3c67fd5cc0203c936ae9
     }
 
 
