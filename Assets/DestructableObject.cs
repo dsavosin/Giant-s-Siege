@@ -11,24 +11,34 @@ public class DestructableObject : MonoBehaviour
     [SerializeField]
     float damageReceive;
 
+
     public Transform hitFX;
 
+    float waitForSeconds;
 
     public float DestructionThreshold = 1;
     // Start is called before the first frame update
     void Start()
     {
+        waitForSeconds = 3.0f;
     }
 
     // Update is called once per frame
     void Update()
     {
+        waitForSeconds += Time.deltaTime;
+        if(waitForSeconds >= 3.0f)
+        {
+            waitForSeconds = 3.0f;
+        }
+
+
         if (Input.GetKeyDown(KeyCode.P))
         {
             iTween.PunchPosition(gameObject, iTween.Hash("amount", new Vector3(0.5f, 0.5f, 0.5f), "time", 1, "delay", 0.1, "loopType", "none"));
 
-            if(hitFX != null)
-                hitFX.GetComponentInChildren<ParticleSystem>().Play();
+            //if(hitFX != null)
+                //hitFX.GetComponentInChildren<ParticleSystem>().Play();
         }
     }
 
@@ -39,17 +49,19 @@ public class DestructableObject : MonoBehaviour
 
         if (collision.gameObject.CompareTag("LeftHand"))
         {
-            if (EnergyController.instance.leftHandVelo > DestructionThreshold)
+            if (EnergyController.instance.leftHandVelo > DestructionThreshold && waitForSeconds >= 3.0f)
             {
                 dealDamage = true;
+                waitForSeconds = 0.0f;
             }
         }
 
         if (collision.gameObject.CompareTag("RightHand"))
         {
-            if (EnergyController.instance.rightHandVelo > DestructionThreshold)
+            if (EnergyController.instance.rightHandVelo > DestructionThreshold && waitForSeconds >= 3.0f)
             {
                 dealDamage = true;
+                waitForSeconds = 0.0f;
             }
         }
 
@@ -77,12 +89,19 @@ public class DestructableObject : MonoBehaviour
         {
             health -= damageReceive;
 
-            if (hitFX != null)
-                hitFX.GetComponentInChildren<ParticleSystem>().Play();
+            if(EnergyController.instance.hitCastleFirstTime == false)
+            {
+                EnergyController.instance.SpawnUnit();
+                EnergyController.instance.hitCastleFirstTime = true;
+                //EnergyController.instance.canSpawn = true;
+            }
 
             iTween.PunchPosition(gameObject, iTween.Hash("amount", new Vector3(0.5f, 0.5f, 0.5f), "time", 1, "delay", 0.1, "loopType", "none"));
             if (health <= 0.0f)
             {
+                if (hitFX != null)
+                    hitFX.GetComponentInChildren<ParticleSystem>().Play();
+
                 StartCoroutine(DestroyObject(1.5f));
             }
         }

@@ -72,7 +72,7 @@ MonoBehaviour:
   rotationSpeed: 20
   attackRadius: 0.5
   unitSpeed: 0.2
-  unitDamage: 1
+  unitDamage: 10
   soldiers:
   - {fileID: 2168320918293462017}
   - {fileID: 1628029881199714202}
