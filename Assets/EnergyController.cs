@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -41,7 +42,6 @@ public class EnergyController : MonoBehaviour
         wss = SocketManager.getInstance(wssUri);
     }
 
-
     // Update is called once per frame
     void Update()
     {
@@ -60,6 +60,14 @@ public class EnergyController : MonoBehaviour
         {
             socketFrameCount = 0;
             wss.Flush();
+        }
+    }
+
+    void OnApplicationQuit()
+    {
+        if (wss.IsConnected)
+        {
+            wss.Close();
         }
     }
 

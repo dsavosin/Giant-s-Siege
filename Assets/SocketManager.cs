@@ -40,11 +40,16 @@ public class SocketManager
 
     ~SocketManager()
     {
+        Close();
+    }
+
+    public void Close()
+    {
         if (_socket != null && _isConnected)
         {
             try
             {
-                _socket.Close();
+                _socket.CloseAsync();
             }
             finally
             {
@@ -56,7 +61,7 @@ public class SocketManager
         {
             _instances.Remove(_uri);
         }
-    }
+    } 
 
     public bool IsConnected => _isConnected;
 
@@ -70,7 +75,7 @@ public class SocketManager
         events[e.type] = e;
     }
 
-    public void Flush()
+    public async void Flush()
     {
         if (!IsConnected || events.Count == 0) return;
         string data = toJson(events.Values);
