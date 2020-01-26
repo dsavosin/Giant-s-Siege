@@ -1316,7 +1316,11 @@ MonoBehaviour:
   poisonCloud: {fileID: 6051283576615624428, guid: 846e099f177853949ba9cc0be2f69d1a,
     type: 3}
   source: {fileID: 1385010653}
-  audios: []
+  audios:
+  - {fileID: 8300000, guid: e7194636cd2a5054286913c0863f5ff4, type: 3}
+  - {fileID: 8300000, guid: 36e99334a1bace643b32d40408cd8cb0, type: 3}
+  - {fileID: 8300000, guid: ef5bdcf852833cd408a7a5f5965469a2, type: 3}
+  - {fileID: 8300000, guid: 64c3f588a84c7c749b174eba3892df45, type: 3}
 --- !u!4 &1385010652
 Transform:
   m_ObjectHideFlags: 0

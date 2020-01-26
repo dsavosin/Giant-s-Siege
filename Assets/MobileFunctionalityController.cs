@@ -63,13 +63,14 @@ public class MobileFunctionalityController : MonoBehaviour
     void SpawnReinforcements()
     {
         Debug.Log("Spawn");
-        //source.PlayOneShot(audios[2]);
+        source.PlayOneShot(audios[2]);
         EnergyController.instance.SpawnUnit(true);
     }
 
     void PoisonKnights()
     {
         List<GameObject> clouds = new List<GameObject>();
+        source.PlayOneShot(audios[1]);
         mouthCtrl.energyPerSoldier = 2;
         GroundUnit[] units = FindObjectsOfType<GroundUnit>();
         foreach (GroundUnit unit in units)
@@ -94,7 +95,7 @@ public class MobileFunctionalityController : MonoBehaviour
 
     void BlurVision()
     {
-        //source.PlayOneShot(audios[3]);
+        source.PlayOneShot(audios[3]);
         cameraFade.OnStartFade(color, 2, true);
         StartCoroutine(DelayBlur());
     }
@@ -105,7 +106,7 @@ public class MobileFunctionalityController : MonoBehaviour
     }
     void MoreDamage()
     {
-        //source.PlayOneShot(audios[0]);
+        source.PlayOneShot(audios[0]);
         GroundUnit[] units = FindObjectsOfType<GroundUnit>();
         foreach (GroundUnit unit in units)
         {
