@@ -22,29 +22,41 @@ public class LimbEnergyController : MonoBehaviour
     float BaseEnergyDeincrementalRatio;
 
     [SerializeField] private float energyIncrementPerTick = 0.01f;
+    [SerializeField]
+    Camera cam;
 
+    bool hasStarted=false;
     // Start is called before the first frame update
     void Start()
     {
-
+        StartCoroutine(WaitToStart());
     }
 
+    IEnumerator WaitToStart()
+    {
+        yield return new WaitForSeconds(1);
+        hasStarted = true;
+    }
     // Update is called once per frame
     void Update()
     {
-        if (controller.isPoseValid)
+        if (controller) {
+            if (controller.isPoseValid)
+            {
+                speed = controller.GetTrackedObjectVelocity().magnitude;
+            }
+            else
+            {
+                EnergyController.instance.SetVelocity(limb, 0);
+            }
+        }
+        else if (cam&&hasStarted)
         {
-            
-            speed = controller.GetTrackedObjectVelocity().magnitude;
+            speed = cam.velocity.magnitude;
+        }
             EnergyController.instance.SetVelocity(limb, speed);
             CalculateSubtractableEnergy();
             EnergyRegeneration();
-        }
-        else
-        {
-            EnergyController.instance.SetVelocity(limb, 0);
-        }
-
     }
 
     private void EnergyRegeneration()

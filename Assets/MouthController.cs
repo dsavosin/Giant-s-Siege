@@ -1,11 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.Events;
 public class MouthController : MonoBehaviour
 {
     [SerializeField]
     float energyPerSoldier = 10;
+    [SerializeField]
+    UnityEvent OnEat;
     // Start is called before the first frame update
     void Start()
     {
@@ -25,6 +27,8 @@ public class MouthController : MonoBehaviour
         {
             EnergyController.instance.AddSetEnergy(energyPerSoldier);
             Destroy(other.transform.gameObject);
+
+            OnEat.Invoke();
 
         }
     }

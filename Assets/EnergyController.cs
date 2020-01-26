@@ -29,7 +29,7 @@ public class EnergyController : MonoBehaviour
 
 
     public bool canSpawn;
-
+    bool spawnTimeOut;
     // Start is called before the first frame update
     void Start()
     {
@@ -50,7 +50,7 @@ public class EnergyController : MonoBehaviour
             SpawnUnit();
         }
 
-        if(energy > 50 && canSpawn)
+        if(energy > 50 && canSpawn && !spawnTimeOut)
         {
             canSpawn = false;
             SpawnUnit();
@@ -80,6 +80,7 @@ public class EnergyController : MonoBehaviour
 
     public void SpawnUnit()
     {
+        StartCoroutine(Timeout());
         if (flipSwitch)
         {
             Instantiate(groundUnitPrefab, spawnPoint1.position, spawnPoint1.rotation);
@@ -90,6 +91,28 @@ public class EnergyController : MonoBehaviour
             Instantiate(groundUnitPrefab, spawnPoint2.position, spawnPoint2.rotation);
             flipSwitch = true;
         }
+    }
+    public void SpawnUnit(bool quick)
+    {
+        if (!quick)
+            StartCoroutine(Timeout());
+        if (flipSwitch)
+        {
+            Instantiate(groundUnitPrefab, spawnPoint1.position, spawnPoint1.rotation);
+            flipSwitch = false;
+        }
+        else
+        {
+            Instantiate(groundUnitPrefab, spawnPoint2.position, spawnPoint2.rotation);
+            flipSwitch = true;
+        }
+    }
+
+    IEnumerator Timeout()
+    {
+        spawnTimeOut = true;
+        yield return new WaitForSeconds(30);
+        spawnTimeOut = false;
     }
 
     public void AddSetEnergy(float val)
@@ -137,9 +160,23 @@ public class EnergyController : MonoBehaviour
             canSpawn = true;
         }
     }
+    public void SubtractSetEnergy(float val)
+    {
+        energy -= val;
+        if (energy < 0)
+            energy = 0;
 
+    }
     private void HandleHostEvent(SocketEvent e)
     {
         Debug.Log($"TODO Handle Host Event: {e}");
     }
 }
+   
+
+
+
+
+
+
+

@@ -22,17 +22,19 @@ public class GroundUnit : MonoBehaviour
     [SerializeField]
     float unitSpeed;
     [SerializeField]
-    float unitDamage;
+    public float unitDamage;
     public Transform[] soldiers;
     [SerializeField]
     UnityEvent OnScare;
     [SerializeField]
-    UnityEvent OffScare;
+    UnityEvent OnSmack;
+
     Transform playerTarget;
     Transform gazeTarget;
     Transform regroupPoint;
     
     bool killed=false;
+    bool scared = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -78,7 +80,7 @@ public class GroundUnit : MonoBehaviour
             StartCoroutine(ReturnToUnit(1.0f));
         }
 
-        if (!killed)
+        if (!killed&&!scared)
         {
             Vector3 playerFloorPos = new Vector3(playerTarget.position.x, 0.0f, playerTarget.position.z);
             Quaternion quarternion = Quaternion.LookRotation(playerFloorPos - transform.position);
@@ -100,6 +102,7 @@ public class GroundUnit : MonoBehaviour
 
     public void SmackEm()
     {
+        OnSmack.Invoke();
         killed = true;
         foreach(Transform soldier in soldiers)
         {
@@ -123,25 +126,29 @@ public class GroundUnit : MonoBehaviour
 
     public void ScareEm()
     {
-        OnScare.Invoke();
-        foreach (Transform soldier in soldiers)
+        if (!killed)
         {
-            if (soldier != this.transform && soldier != null)
+            scared = true;
+            OnScare.Invoke();
+            foreach (Transform soldier in soldiers)
             {
-                Rigidbody rb = soldier.GetComponent<Rigidbody>();
-
-                if (rb != null)
+                if (soldier != this.transform && soldier != null)
                 {
-                    rb.isKinematic = false;
-                    rb.useGravity = false;
+                    Rigidbody rb = soldier.GetComponent<Rigidbody>();
 
-                    rb.constraints = RigidbodyConstraints.FreezeRotation;
+                    if (rb != null)
+                    {
+                        rb.isKinematic = false;
+                        rb.useGravity = false;
 
-                    rb.AddExplosionForce(10f, transform.position, 5f, 0.0f);
-                    //Vector3 randDir = new Vector3(Random.Range(-1.0f, 1.0f), 0.0f, Random.Range(-1.0f, 1.0f));
-                    //rb.velocity = randDir;
+                        rb.constraints = RigidbodyConstraints.FreezeRotation | RigidbodyConstraints.FreezePositionY;
 
-                    //Disable animation controllers per entity
+                        rb.AddExplosionForce(1f, transform.position, 1f, 0.0f);
+                        //Vector3 randDir = new Vector3(Random.Range(-1.0f, 1.0f), 0.0f, Random.Range(-1.0f, 1.0f));
+                        //rb.velocity = randDir;
+
+                        //Disable animation controllers per entity
+                    }
                 }
             }
         }
@@ -163,9 +170,13 @@ public class GroundUnit : MonoBehaviour
             }
             if (velo > 3)
             {
-                Debug.Log("Ground Unit collided with a hand!");
-                SmackEm();
-                StartCoroutine(DestroyUnit(4.0f));
+                if (EnergyController.instance.energy > 30)
+                {
+                    EnergyController.instance.SubtractSetEnergy(20);
+                    SmackEm();
+                    StartCoroutine(DestroyUnit(4.0f));
+                }
+                    
             }
         }
         if (other.tag == "Interactable")
@@ -212,7 +223,8 @@ public class GroundUnit : MonoBehaviour
                 }
             }
         }
-        OffScare.Invoke();
+
+        scared = false;
     }
 
     IEnumerator DestroyUnit(float delay = 0.0f)

@@ -7,6 +7,8 @@ public class EnergyUI : MonoBehaviour
 {
     public GameObject slider;
 
+    public Image radial;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -16,6 +18,9 @@ public class EnergyUI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        slider.GetComponent<Slider>().value = EnergyController.instance.energy;
+        if(slider)
+            slider.GetComponent<Slider>().value = EnergyController.instance.energy;
+        if (radial)
+            radial.fillAmount = EnergyController.instance.energy / 100;
     }
 }

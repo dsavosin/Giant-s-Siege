@@ -25,7 +25,7 @@ PrefabInstance:
     - target: {fileID: 8571540327755856446, guid: e15cc1cc2ec2d7846a557b93bb8190e8,
         type: 3}
       propertyPath: m_Name
-      value: Throwable (Newton) (9)
+      value: Throwable (Newton) (9) Variant
       objectReference: {fileID: 0}
     - target: {fileID: 8571540327755856446, guid: e15cc1cc2ec2d7846a557b93bb8190e8,
         type: 3}

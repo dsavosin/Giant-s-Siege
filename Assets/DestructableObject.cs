@@ -45,7 +45,7 @@ public class DestructableObject : MonoBehaviour
     void OnCollisionEnter(Collision collision)
     {
         bool dealDamage = false;
-        Debug.Log(collision.transform.tag);
+        //Debug.Log(collision.transform.tag);
 
         if (collision.gameObject.CompareTag("LeftHand"))
         {
