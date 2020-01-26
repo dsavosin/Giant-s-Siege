@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.Events;
 public class DestructableObject : MonoBehaviour
 {
 
@@ -17,6 +17,9 @@ public class DestructableObject : MonoBehaviour
     float waitForSeconds;
 
     public float DestructionThreshold = 1;
+
+    [SerializeField]
+    UnityEvent OnHit;
     // Start is called before the first frame update
     void Start()
     {
@@ -88,14 +91,14 @@ public class DestructableObject : MonoBehaviour
         if (dealDamage)
         {
             health -= damageReceive;
-
-            if(EnergyController.instance.hitCastleFirstTime == false)
+            OnHit.Invoke();
+            if (EnergyController.instance.hitCastleFirstTime == false)
             {
                 EnergyController.instance.SpawnUnit();
                 EnergyController.instance.hitCastleFirstTime = true;
                 //EnergyController.instance.canSpawn = true;
             }
-
+            EnergyController.instance.AddScore();
             iTween.PunchPosition(gameObject, iTween.Hash("amount", new Vector3(0.5f, 0.5f, 0.5f), "time", 1, "delay", 0.1, "loopType", "none"));
             if (health <= 0.0f)
             {

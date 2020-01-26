@@ -2,10 +2,10 @@
 
 public class SocketEvent
 {
-    public readonly string clientType = "Server";
-    public readonly string type;
-    public readonly string subType = null;
-    public readonly dynamic value;
+    public  string clientType = "Server";
+    public  string type;
+    public  string subType = null;
+    public  dynamic value;
 
     [JsonConstructor]
     public SocketEvent(string type, dynamic value)

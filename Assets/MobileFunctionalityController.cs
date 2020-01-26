@@ -13,10 +13,14 @@ public class MobileFunctionalityController : MonoBehaviour
     [SerializeField]
     Color color;
     [SerializeField]
+    MouthController mouthCtrl;
+    [SerializeField]
+    GameObject poisonCloud;
+    [SerializeField]
     AudioSource source;
     [SerializeField]
     AudioClip[] audios;
-
+   
 
     public static MobileFunctionalityController instance;
     // Start is called before the first frame update
@@ -35,17 +39,18 @@ public class MobileFunctionalityController : MonoBehaviour
         }
     }
 
-    public void RecCommand(string command)
+    public void RecCommand(string e)
     {
-        switch (command)
+        
+        switch (e)
         {
             case "IncreaseDamage":
                 MoreDamage();
                 break;
-            case "AddTrebuchet":
-
+            case "PoisonousKnights":
+                PoisonKnights();
                 break;
-            case "SpawnReinforcements":
+            case "IncreaseReinforcements":
                 SpawnReinforcements();
                 break;
 
@@ -57,13 +62,39 @@ public class MobileFunctionalityController : MonoBehaviour
 
     void SpawnReinforcements()
     {
-        source.PlayOneShot(audios[2]);
+        Debug.Log("Spawn");
+        //source.PlayOneShot(audios[2]);
         EnergyController.instance.SpawnUnit(true);
+    }
+
+    void PoisonKnights()
+    {
+        List<GameObject> clouds = new List<GameObject>();
+        mouthCtrl.energyPerSoldier = 2;
+        GroundUnit[] units = FindObjectsOfType<GroundUnit>();
+        foreach (GroundUnit unit in units)
+        {
+            GameObject poison=Instantiate(poisonCloud, unit.transform.position,unit.transform.rotation);
+            poison.transform.parent = unit.transform;
+            clouds.Add(poison);
+        }
+        StartCoroutine(UnpoisonKnights(clouds));
+
+    }
+
+    IEnumerator UnpoisonKnights(List<GameObject> poison)
+    {
+        yield return new WaitForSeconds(5);
+        foreach(GameObject poi in poison)
+        {
+            Destroy(poi);
+        }
+        mouthCtrl.energyPerSoldier = 10;
     }
 
     void BlurVision()
     {
-        source.PlayOneShot(audios[3]);
+        //source.PlayOneShot(audios[3]);
         cameraFade.OnStartFade(color, 2, true);
         StartCoroutine(DelayBlur());
     }
@@ -74,12 +105,13 @@ public class MobileFunctionalityController : MonoBehaviour
     }
     void MoreDamage()
     {
-        source.PlayOneShot(audios[0]);
+        //source.PlayOneShot(audios[0]);
         GroundUnit[] units = FindObjectsOfType<GroundUnit>();
         foreach (GroundUnit unit in units)
         {
             unit.unitDamage = 15;
         }
+        StartCoroutine(DisableDamage(units));
         
     }
     IEnumerator DisableDamage(GroundUnit[] units)

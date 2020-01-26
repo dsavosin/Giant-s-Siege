@@ -5,9 +5,12 @@ using UnityEngine.Events;
 public class MouthController : MonoBehaviour
 {
     [SerializeField]
-    float energyPerSoldier = 10;
+    public float energyPerSoldier = 10;
     [SerializeField]
     UnityEvent OnEat;
+
+    [SerializeField]
+    UnityEvent OnEatGameOver;
     // Start is called before the first frame update
     void Start()
     {
@@ -30,6 +33,10 @@ public class MouthController : MonoBehaviour
 
             OnEat.Invoke();
 
+        }
+        if(other.tag== "GameOverFood")
+        {
+            OnEatGameOver.Invoke();
         }
     }
 }

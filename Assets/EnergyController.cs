@@ -2,7 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 public class EnergyController : MonoBehaviour
 {
     public float energy=100;
@@ -27,9 +28,18 @@ public class EnergyController : MonoBehaviour
 
     public bool hitCastleFirstTime;
 
-
+    [SerializeField]
+    GameObject endCanvas;
+    [SerializeField]
+    Text scoreText;
     public bool canSpawn;
     bool spawnTimeOut;
+
+    [SerializeField]
+    float score;
+    [SerializeField]
+    GameObject player;
+    bool gameEnded;
     // Start is called before the first frame update
     void Start()
     {
@@ -55,7 +65,19 @@ public class EnergyController : MonoBehaviour
             canSpawn = false;
             SpawnUnit();
         }
-        
+        if (energy <= 0)
+        {
+            gameEnded = true;
+            EndGame();
+        }
+        if (gameEnded)
+            energy = 0;
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            Reload();
+        }
+          
         // flush socket events to clients every 9 frames
         // and see if there are any events to consume which affect gameplay
         if (++socketFrameCount % 9 == 0)
@@ -70,12 +92,38 @@ public class EnergyController : MonoBehaviour
         }
     }
 
+    void EndGame()
+    {
+        canSpawn = false;
+        spawnTimeOut = true;
+        endCanvas.SetActive(true);
+        scoreText.text = "SCORE: " + score;
+    }
+
     void OnApplicationQuit()
     {
         if (wss.IsConnected)
         {
             wss.Close();
         }
+    }
+
+    public void AddScore()
+    {
+        score += 100;
+    }
+
+    public float CalculateScore()
+    {
+
+        /*TimeInGame*/
+        return score;
+    }
+
+    public void Reload()
+    {
+        Destroy(player);
+        SceneManager.LoadSceneAsync(1,LoadSceneMode.Single);
     }
 
     public void SpawnUnit()
@@ -169,6 +217,8 @@ public class EnergyController : MonoBehaviour
     }
     private void HandleHostEvent(SocketEvent e)
     {
+        
+        MobileFunctionalityController.instance.RecCommand(e.subType);
         Debug.Log($"TODO Handle Host Event: {e}");
     }
 }

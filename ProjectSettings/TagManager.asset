@@ -4,7 +4,6 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - projectile
   - FxTemporaire
   - GazePoint
   - Food
@@ -13,6 +12,7 @@ TagManager:
   - LeftHand
   - RightHand
   - Interactable
+  - GameOverFood
   layers:
   - Default
   - TransparentFX
