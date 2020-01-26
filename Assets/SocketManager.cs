@@ -100,7 +100,8 @@ public class SocketManager
     protected void OnOpen(object sender, EventArgs e)
     {
         Debug.Log("WebSocket connected");
-
+        AddEvent(new SocketEvent("Identify", true));
+        Flush();
         _isConnected = true;
     }
 
