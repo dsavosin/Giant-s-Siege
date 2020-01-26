@@ -56,10 +56,17 @@ public class EnergyController : MonoBehaviour
             SpawnUnit();
         }
         
+        // flush socket events to clients every 9 frames
+        // and see if there are any events to consume which affect gameplay
         if (++socketFrameCount % 9 == 0)
         {
             socketFrameCount = 0;
             wss.Flush();
+            var hostEvent = wss.ConsumeHostEvent();
+            if (hostEvent != null)
+            {
+                HandleHostEvent(hostEvent);
+            }
         }
     }
 
@@ -129,5 +136,10 @@ public class EnergyController : MonoBehaviour
         {
             canSpawn = true;
         }
+    }
+
+    private void HandleHostEvent(SocketEvent e)
+    {
+        Debug.Log($"TODO Handle Host Event: {e}");
     }
 }

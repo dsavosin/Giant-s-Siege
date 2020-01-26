@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Valve.Newtonsoft.Json;
+using Valve.Newtonsoft.Json.Linq;
 using WebSocketSharp;
 
 public class SocketManager
@@ -12,7 +13,8 @@ public class SocketManager
     private bool _isConnected = false;
     private readonly bool _isSingleton;
     
-    private Dictionary<string, SocketEvent> events = new Dictionary<string, SocketEvent>();
+    private Dictionary<string, SocketEvent> clientEvents = new Dictionary<string, SocketEvent>();
+    private SocketEvent hostEvent;
 
     public SocketManager(string uri, bool isSingleton = false)
     {
@@ -72,14 +74,26 @@ public class SocketManager
             return;
         }
 
-        events[e.type] = e;
+        clientEvents[e.type] = e;
+    }
+
+    public SocketEvent ConsumeHostEvent()
+    {
+        if (hostEvent != null)
+        {
+            var e = hostEvent;
+            hostEvent = null;
+            return e;
+        }
+
+        return null;
     }
 
     public async void Flush()
     {
-        if (!IsConnected || events.Count == 0) return;
-        string data = toJson(events.Values);
-        events.Clear();
+        if (!IsConnected || clientEvents.Count == 0) return;
+        string data = toJson(clientEvents.Values);
+        clientEvents.Clear();
         try
         {
             _socket.SendAsync(data, completed =>
@@ -99,21 +113,49 @@ public class SocketManager
     
     protected void OnMessage(object sender, MessageEventArgs e)
     {
-        Debug.Log($"WebSocket message received: ${e.Data}");
+        var messages = JsonConvert.DeserializeObject(e.Data);
+        
+        if (messages == null || messages.GetType() != typeof(JArray) || ((JArray)messages).Count == 0)
+        {
+            Debug.LogError("Message received is not a non-empty array");
+            return;
+        }
+
+        SocketEvent gameEvent = null;
+
+        foreach (var item in (JArray)messages)
+        {
+            try
+            {
+                gameEvent = item.ToObject<SocketEvent>();
+                Debug.Log($"WebSocket message received: ${item}");
+                break;
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"Failed to decode message received item");
+                Debug.LogException(ex);
+            }
+        }
+
+        if (gameEvent != null)
+        {
+            hostEvent = gameEvent;
+        }
     }
 
     protected void OnOpen(object sender, EventArgs e)
     {
         Debug.Log("WebSocket connected");
+        _isConnected = true;
         AddEvent(new SocketEvent("Identify", true));
         Flush();
-        _isConnected = true;
     }
 
     protected void OnClose(object sender, CloseEventArgs e)
     {
         _isConnected = false;
-        events.Clear();
+        clientEvents.Clear();
         Debug.Log("WebSocket closed");
     }
 

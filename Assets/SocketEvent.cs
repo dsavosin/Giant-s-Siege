@@ -1,10 +1,13 @@
-﻿public class SocketEvent
+﻿using Valve.Newtonsoft.Json;
+
+public class SocketEvent
 {
     public readonly string clientType = "Server";
     public readonly string type;
     public readonly string subType = null;
     public readonly dynamic value;
 
+    [JsonConstructor]
     public SocketEvent(string type, dynamic value)
     {
         this.type = type;
